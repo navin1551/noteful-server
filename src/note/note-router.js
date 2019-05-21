@@ -9,7 +9,7 @@ const serializedNotes = note => ({
   name: note.name,
   modified: note.modified,
   content: note.content,
-  folder: note.folder
+  folder: note.folderid
 });
 
 noteRouter
