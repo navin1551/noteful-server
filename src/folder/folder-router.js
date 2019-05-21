@@ -10,7 +10,7 @@ const serializeFolder = folder => ({
 });
 
 folderRouter
-  .route("/folders")
+  .route("/")
   .get((req, res, next) => {
     const knexInstance = req.app.get("db");
     FolderService.getAllFolders(knexInstance)
@@ -35,7 +35,7 @@ folderRouter
   });
 
 folderRouter
-  .route("/folders/:id")
+  .route("/:id")
   .all((req, res, next) => {
     const knexInstance = req.app.get("db");
     const { id } = req.params;
@@ -59,6 +59,18 @@ folderRouter
     const { id } = req.params;
     const knexInstance = req.app.get("db");
     FolderService.deleteNotes(knexInstance, id)
+      .then(() => {
+        res.status(204).end();
+      })
+      .catch(next);
+  })
+
+  .patch(jsonParser, (req, res, next) => {
+    const { id, name } = req.body;
+    const folderToUpdate = { id, name };
+    const knexInstance = req.app.get("db");
+
+    FolderService.updateNotes(knexInstance, req.params.id, folderToUpdate)
       .then(() => {
         res.status(204).end();
       })

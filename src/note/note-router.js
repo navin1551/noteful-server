@@ -13,7 +13,7 @@ const serializedNotes = note => ({
 });
 
 noteRouter
-  .route("/notes")
+  .route("/")
   .get((req, res, next) => {
     const knexInstance = req.app.get("db");
     NoteService.getAllNotes(knexInstance)
@@ -38,7 +38,7 @@ noteRouter
   });
 
 noteRouter
-  .route("/notes/:id")
+  .route("/:id")
   .all((req, res, next) => {
     const { id } = req.params;
     const knexInstance = req.app.get("db");
@@ -62,6 +62,18 @@ noteRouter
     const { id } = req.params;
     const knexInstance = req.app.get("db");
     NoteService.deleteNotes(knexInstance, id)
+      .then(() => {
+        res.status(204).end();
+      })
+      .catch(next);
+  })
+
+  .patch(jsonParser, (req, res, next) => {
+    const { id, name, modified, folderid, content } = req.body;
+    const noteToUpdate = { id, name, modified, folderid, content };
+    const knexInstance = req.app.get("db");
+
+    NoteService.updateNotes(knexInstance, req.params.id, noteToUpdate)
       .then(() => {
         res.status(204).end();
       })
